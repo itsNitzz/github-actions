@@ -4,11 +4,11 @@ on:
     pull_request:
         types: [opened, synchronize]
         branches: 
-            - main
+            - 'main'
 
 jobs:
     echo:
         runs-on: ubuntu-latest
         steps:
           - name: print message  
-            run: "Running whenever a PR is opened or synchronized AND base branch is main."
+            run: echo "Running whenever a PR is opened or synchronized AND base branch is main."
