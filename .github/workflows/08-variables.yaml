@@ -1,7 +1,6 @@
 name: 08 - Using Variables
 
 on: 
-    push:
     workflow_dispatch:   
 
 env:
@@ -20,9 +19,9 @@ jobs:
                  STEP_VAR: "I am a step env var"
                  step_var2: "I am another step var"
               run: |
-                  echo "Step env var: $STEP_VAR"      
+                  echo "Step env var: ${{env.STEP_VAR}}"      
                   echo "Step env var 2: ${{env.step_var2}}"      
-                  echo "Job env var: $JOB_VAR"      
+                  echo "Job env var: ${{env.JOB_VAR}}"      
                   echo "Workflow env var: ${{env.WORKFLOW_VAR}}"      
                   echo "Overwritten: ${{env.OVERWRITTEN}}"   
                   
