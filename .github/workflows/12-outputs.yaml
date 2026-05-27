@@ -25,6 +25,7 @@ jobs:
           echo  "output2=value2" >> "$GITHUB_OUTPUT"
           echo  $GITHUB_OUTPUT
           cat  "$GITHUB_OUTPUT"
+      # each step recieves it own unique github output, it cannot out another/previous step outputs
       - name: Log github output
         run: cat "$GITHUB_OUTPUT"
 
