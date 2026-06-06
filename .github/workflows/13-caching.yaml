@@ -18,6 +18,7 @@ on:
 
 jobs:
   build:
+    needs: install-deps
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -37,12 +38,8 @@ jobs:
         if: inputs.use-cache
         uses: actions/cache@v3
         with:
-          key: deps-node-modules-${{ hashFiles('04-using-actions/react-app/package-lock.json') }}
+          key: ${{needs.install-deps.outputs.deps-chache-key}}
           path: 04-using-actions/react-app/node_modules
-
-      - name: Install dependencies
-        if: ${{steps.cache.outputs.cache-hit != 'true'}}
-        run: npm ci
 
       - name: Run test
         run: npm run test
@@ -52,3 +49,38 @@ jobs:
 
       - name: Deploying to nonprod
         run: echo "Deploying to nonprod"
+
+  install-deps:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: 04-using-actions/react-app
+
+    outputs:
+      deps-chache-key: ${{steps.cache-key.outputs.CACHE_KEY}}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup node
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{inputs.node-version}}
+
+      - name: Calculate cache key
+        id: cache-key
+        run: |
+          echo "CACHE_KEY=deps-node-modules-${{ hashFiles('04-using-actions/react-app/package-lock.json') }}" >> "$GITHUB_OUTPUT"
+
+      - name: Download cached dependencies
+        id: cache
+        if: inputs.use-cache
+        uses: actions/cache@v3
+        with:
+          key: ${{steps.cache-key.outputs.CACHE_KEY}}
+          path: 04-using-actions/react-app/node_modules
+
+      - name: Install dependencies
+        if: ${{steps.cache.outputs.cache-hit != 'true'}}
+        run: npm ci
