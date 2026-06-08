@@ -4,10 +4,11 @@ on: workflow_dispatch
 
 jobs:
   backwards-compatibility:
+    if: false
     runs-on: ${{matrix.os}}
     name: ${{matrix.os}}-${{matrix.node-version}}
     strategy:
-      fail-fast: false
+      fail-fast: true # Setting fail-fast to false prevents GitHub from canceling all in-progress jobs if any matrix job fails. Default: true
       matrix:
         node-version: [22.x, 23.x, 24.x]
         os:
@@ -38,3 +39,20 @@ jobs:
 
       - name: Upload test results
         run: echo "Uploading tests results"
+
+  include-example:
+    runs-on: ubuntu-latest
+    name: ${{matrix.color}}-${{matrix.shape}}-${{matrix.size}}
+    strategy:
+      matrix:
+        color: [red, green]
+        shape: [circle, square]
+        size: [small, large]
+
+        include:
+          - color: red
+            shape: triangle
+
+    steps:
+      - name: Dummy step
+        run: echo "${{matrix.color}}-${{matrix.shape}}-${{matrix.size}}"
