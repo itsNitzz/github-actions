@@ -37,6 +37,6 @@ jobs:
       my-env-value: ${{vars.MY_ENV_VALUE || 'deafult value'}}
 
     steps:
-      - name: E2E tests
+      - name: Deploying to prod
         run: |
           echo "Deploying to prod"
