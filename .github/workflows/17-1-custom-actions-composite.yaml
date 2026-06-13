@@ -28,6 +28,7 @@ jobs:
         with:
           node-version: 24.x
           working-dir: 04-using-actions/react-app
+          target-env: ${{inputs.target-env}}
 
       - name: Test
         run: npm run test
