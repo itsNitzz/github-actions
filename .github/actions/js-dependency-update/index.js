@@ -9,7 +9,7 @@ const validateDirName = ({ dirName }) => /^[a-zA-Z0-9_\-\/]+$/.test(dirName);
 
 async function run() {
   const baseBranch = core.getInput("base-branch");
-  const targetBranch = core.getInput("target-branch");
+  const headBranch = core.getInput("head-branch");
   const workingDirectory = core.getInput("working-directory");
   const debug = core.getInput("debug");
   const ghToken = core.getInput("gh-token", { required: true });
@@ -22,9 +22,9 @@ async function run() {
     );
     return;
   }
-  if (!validateBranchName({ branchName: targetBranch })) {
+  if (!validateBranchName({ branchName: headBranch })) {
     core.setFailed(
-      "Invalid target branch name. Branch names should ony contains letters, numbers, underscore, hyphens, periods and forward slash.",
+      "Invalid head branch name. Branch names should ony contains letters, numbers, underscore, hyphens, periods and forward slash.",
     );
     return;
   }
@@ -34,10 +34,6 @@ async function run() {
     );
     return;
   }
-
-  core.info("base branch", baseBranch);
-  core.info("target branch", targetBranch);
-  core.info("working directory", workingDirectory);
 
   await exec.exec("npm update", [], {
     cwd: workingDirectory,
@@ -57,7 +53,7 @@ async function run() {
     await exec.exec(`git config --global user.email "gh-automation@gmail.com"`);
     await exec.exec(`git config --global user.name "Nityanand Rai"`);
 
-    await exec.exec(`git switch -c ${targetBranch}`, [], {
+    await exec.exec(`git switch -c ${headBranch}`, [], {
       cwd: workingDirectory,
     });
     await exec.exec(`git add package.json package-lock.json`, [], {
@@ -66,7 +62,7 @@ async function run() {
     await exec.exec(`git commit -m "update package dependencies"`, [], {
       cwd: workingDirectory,
     });
-    await exec.exec(`git push -u origin ${targetBranch} -f`, [], {
+    await exec.exec(`git push -u origin ${headBranch} -f`, [], {
       cwd: workingDirectory,
     });
 
@@ -79,7 +75,7 @@ async function run() {
         title: `Update NPM dependencies`,
         body: `This pull request updates NPM packages`,
         base: baseBranch,
-        head: targetBranch,
+        head: headBranch,
       });
     } catch (e) {
       core.error(
@@ -89,8 +85,6 @@ async function run() {
       core.error(e);
     }
   }
-
-  core.info("I am a custom JS action");
 }
 
 run();
