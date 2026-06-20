@@ -37,5 +37,5 @@ jobs:
       - name: Deoploy
         id: deploy
         run: |
-          echo ""Deploying build artifacts""
+          echo "Deploying build artifacts"
           echo "url=https://www.google.com" >> "$GITHUB_OUTPUT"
