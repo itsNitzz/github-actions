@@ -1,6 +1,6 @@
 const core = require("@actions/core");
 
-const run = async () => {
+const run = () => {
   const prTitle = core.getInput("pr-title");
 
   if (prTitle.trim() && prTitle.trim().startsWith("feat")) {
@@ -9,3 +9,5 @@ const run = async () => {
     core.error("PR is not a feature");
   }
 };
+
+run();
